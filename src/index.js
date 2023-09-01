@@ -11,8 +11,8 @@ import { BrowserRouter } from 'react-router-dom'
 import axios from 'axios';
 
 
-//axios.defaults.baseURL="http://localhost:3001/"
-axios.defaults.baseURL="https://pi-food-back-production-5f88.up.railway.app/"
+axios.defaults.baseURL="http://localhost:3001/"
+//axios.defaults.baseURL="https://pi-food-back-production-5f88.up.railway.app/"
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render( 
