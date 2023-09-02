@@ -16,6 +16,7 @@ export const FILTER_HEALTH_SCORE="FILTER_HEALTH_SCORE"
 export const RESET="RESET"
 export const PAGINATED_ALL="PAGINATED_ALL"
 export const LOADING_PAGE="LOADING_PAGE"
+export const NULL_SEARCH_NAME = "NULL_SEARCH_NAME"
 
 
 //-------------------   TODO Y NOMBRE   -------------------//
@@ -42,8 +43,11 @@ export const getRecipeAllName =(name)=>{
         try {
             dispatch(loadingPage(true))
              const {data} = await axios.get(`recipe?name=${name}`)
-    
-            return dispatch({type:GET_RECIPE_NAME,payload:data})
+             console.log(data);
+             //return dispatch({type:GET_RECIPE_NAME,payload:data})
+
+              if (data.error) return dispatch({type:NULL_SEARCH_NAME,payload:true})
+              else return dispatch({type:GET_RECIPE_NAME,payload:data})
 
          } catch (error) {
             return {erro:error.message}
@@ -80,7 +84,6 @@ export const addTypeRecipe = ()=>{
     return async function(dispatch){
         try {
             let response = await axios.get(`diets`)
-
             return dispatch({type:ADD_TYPE_DIET,payload:response.data})
             
         } catch (error) {

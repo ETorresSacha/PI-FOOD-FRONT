@@ -1,4 +1,4 @@
-import {GET_RECIPE_ALL, GET_RECIPE_NAME,RECIPE_ID, RESET_RECIPE_ID,ADD_TYPE_DIET,CREATE_RECIPE,UPWARD_OR_FALLING,UPWARD_OR_FALLING_TITLE,FILTER_FOR_STORAGE, FILTER_FOR_DIET,FILTER_HEALTH_SCORE,LOADING_PAGE} from './action'
+import {GET_RECIPE_ALL, GET_RECIPE_NAME,NULL_SEARCH_NAME,RECIPE_ID, RESET_RECIPE_ID,ADD_TYPE_DIET,CREATE_RECIPE,UPWARD_OR_FALLING,UPWARD_OR_FALLING_TITLE,FILTER_FOR_STORAGE, FILTER_FOR_DIET,FILTER_HEALTH_SCORE,LOADING_PAGE} from './action'
 import  { sumaUnicode } from './fun-sum-unicode'// Función para calcular el valor numerico del Id de los datos de la BD
 
 const initialState={
@@ -11,7 +11,8 @@ const initialState={
     recipeDetail:{},
     typesDiets:[],
     createRecipe:[],
-    loading:true
+    loading:true,
+    nullRecipeName:false
 
 }
 
@@ -32,13 +33,23 @@ const reducer=(state=initialState,action)=>{
 
         case GET_RECIPE_NAME:
             return {...state,
-                recipeName:action.payload,
                 recipeFilter:action.payload,
+                recipeName:action.payload,
+                nullRecipeName:false,
                 recipeFilterAll:action.payload,
                 recipeFilterDiets:action.payload,
                 recipeFilterHealthScore:action.payload,
                 loading:false
                 }
+
+        case NULL_SEARCH_NAME:
+            return{...state,
+                nullRecipeName:action.payload,
+                recipeName:state.recipeFilter,
+                //recipeFilter:action.payload,
+                loading:false
+            }
+
 
         //-------------------   RECETA POR ID (DETAIL)   -------------------// 
         case RECIPE_ID:

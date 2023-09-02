@@ -7,6 +7,7 @@ import HomeCard from './HomeCard';
 import Nav from '../nav/Nav';
 import Paginado from '../Paginado/Paginado';
 import Loading from '../loading/Loading';
+import swal from 'sweetalert';
 
 
 const HomePage = ()=>{
@@ -19,6 +20,10 @@ const HomePage = ()=>{
 
      const recipesAll = useSelector(state => state.recipe);
      const recipeFilter = useSelector(state => state.recipeFilter);
+     console.log(recipeFilter.length);
+     const nullRecipeName = useSelector(state => state.nullRecipeName);
+     const recipeName = useSelector(state => state.recipeName);
+     //console.log(nullRecipeName);
      const numberOfRecets=recipeFilter.length
 
 
@@ -27,13 +32,13 @@ const HomePage = ()=>{
     const [index,setIndex]=useState(0) // se crea este estado dentro de "HomePage" con la finalidad de pasarlo por props al componente "Nav" y utilizarlo, pero el uso principal de este hook es en el componente "Paginado"
     
     const [recipeForPage,setRecipeForPage] = useState(10)
-    const [page,setPage] = useState(1) 
+    const [page,setPage] = useState(1)
   
     const inicio = (page - 1) * recipeForPage;
   
     const final = inicio + recipeForPage;
   
-    const cards = recipeFilter.slice(inicio, final);
+    let cards = recipeFilter.slice(inicio, final);
 
     //-------------------             -------------------//
         
@@ -43,10 +48,20 @@ const HomePage = ()=>{
     useEffect(()=>{
        // loading && dispatch(loadingPage(true))
 
+       if(nullRecipeName) {
 
+        swal("No se econtró ninguna receta con esta descripción")
+    }
+   if (!nullRecipeName && recipeName.length===recipeFilter.length) return
+    
         !recipeFilter.length && dispatch(getRecipeAll())
         recipeFilter.length !== recipesAll.length && dispatch(filterForStorage())
-    },[dispatch,recipeFilter.length,recipesAll.length])
+
+    
+
+
+        
+    },[dispatch,recipeFilter.length,recipesAll.length,nullRecipeName])
 
 
                 //-------------------   FILTROS   -------------------//
@@ -75,6 +90,7 @@ const HomePage = ()=>{
         },[dispatch])
         
         const typeDiet = useSelector((state)=>state.typesDiets)
+        //console.log(typeDiet);
       
 
         const handleFilterDiets =(event)=>{
@@ -97,6 +113,8 @@ const HomePage = ()=>{
         setIndex(0)
 
     }
+    
+        
 
     return(
         <div className="conteiner-homePage">
@@ -137,8 +155,8 @@ const HomePage = ()=>{
                <div>
                     <select className='input' placeholder='Type Diet' onChange={handleFilterDiets}>
                             <option  value="diets">type of diets</option>
-                            {typeDiet.map((diet)=>(
-                            <option  key= {diet.id} value={diet.name} >{diet.name}</option>
+                            {typeDiet.map((diet,index)=>(
+                            <option  key= {index} value={diet.name} >{diet.name}</option>
                             ))}
                     </select>
                </div>
