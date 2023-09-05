@@ -1,4 +1,4 @@
-import {GET_RECIPE_ALL, GET_RECIPE_NAME,NULL_SEARCH_NAME,RECIPE_ID, RESET_RECIPE_ID,ADD_TYPE_DIET,CREATE_RECIPE,UPWARD_OR_FALLING,UPWARD_OR_FALLING_TITLE,FILTER_FOR_STORAGE, FILTER_FOR_DIET,FILTER_HEALTH_SCORE,LOADING_PAGE} from './action'
+import {GET_RECIPE_ALL, GET_RECIPE_NAME,NULL_SEARCH_NAME, RESET_RECIPE_NAME,RECIPE_ID, RESET_RECIPE_ID,ADD_TYPE_DIET,CREATE_RECIPE,UPWARD_OR_FALLING,UPWARD_OR_FALLING_TITLE,FILTER_FOR_STORAGE, FILTER_FOR_DIET,FILTER_HEALTH_SCORE,LOADING_PAGE} from './action'
 import  { sumaUnicode } from './fun-sum-unicode'// Función para calcular el valor numerico del Id de los datos de la BD
 
 const initialState={
@@ -7,12 +7,15 @@ const initialState={
     recipeFilter:[],
     recipeFilterAll:[],
     recipeFilterDiets:[],
+    recipeFilterDietsKeep:[],
+    recipeFilterStorageKeep:[],
     recipeFilterHealthScore:[],
     recipeDetail:{},
     typesDiets:[],
     createRecipe:[],
     loading:true,
-    nullRecipeName:false
+    nullRecipeName:false,
+    isAll:false
 
 }
 
@@ -36,17 +39,20 @@ const reducer=(state=initialState,action)=>{
                 recipeFilter:action.payload,
                 recipeName:action.payload,
                 nullRecipeName:false,
-                recipeFilterAll:action.payload,
-                recipeFilterDiets:action.payload,
-                recipeFilterHealthScore:action.payload,
-                loading:false
+                loading:false,
+                vacio:false
                 }
 
         case NULL_SEARCH_NAME:
+
             return{...state,
                 nullRecipeName:action.payload,
-                recipeName:state.recipeFilter,
-                //recipeFilter:action.payload,
+                loading:false
+            }
+        case RESET_RECIPE_NAME:
+
+            return{...state,
+                nullRecipeName:action.payload,
                 loading:false
             }
 
@@ -139,39 +145,86 @@ const reducer=(state=initialState,action)=>{
 
         //-------------------   API O BD   -------------------//
         case FILTER_FOR_STORAGE:{
+            state.isAll=false
                     let api=[]
-                    let baseDatos=[]
-                    state.recipeFilterAll.map(ele=>typeof (ele.id) ==="string"?baseDatos.push(ele): api.push(ele))
+                    let baseDatos=[] 
+                    let keepDates 
+                    
+                    state.recipeFilterDietsKeep.length ? keepDates = state.recipeFilterDietsKeep : keepDates = state.recipeFilterAll 
+                    keepDates.map(ele=>typeof (ele.id) ==="string"?baseDatos.push(ele): api.push(ele))
+
                 if(action.payload==="API"){
+                    if (api.length===0){
+                        return{...state,
+                            nullRecipeName:true,
+                            recipeFilterStorageKeep:state.recipeFilterAll.filter(ele=>typeof (ele.id) !=="string")
+                        }
+                    }
                     return {...state,
                             recipe:[...api],
                              recipeFilter:[...api],
-                            recipeFilterDiets:[...api],
-                            recipeName:[...api]
+                            recipeFilterStorageKeep:state.recipeFilterAll.filter(ele=>typeof (ele.id) !=="string")
                         }
                     }
                 else if (action.payload==="BASE DE DATOS"){
+                    if (baseDatos.length===0){
+                        return{...state,
+                            nullRecipeName:true,
+                            recipeFilterStorageKeep:state.recipeFilterAll.filter(ele=>typeof (ele.id) ==="string")
+                        }
+                    }
                     return {...state,
                             recipe:[...baseDatos],
                             recipeFilter:[...baseDatos],
-                            recipeFilterDiets:[...baseDatos],
-                            recipeName:[...baseDatos]
+                            recipeFilterStorageKeep:state.recipeFilterAll.filter(ele=>typeof (ele.id) ==="string")
                         }
                     }
+
+                else if (action.payload==="TODOS"){
+                    return {...state,
+                        recipeFilter:keepDates,
+                        recipeFilterStorageKeep:[...state.recipeFilterAll],
+                        isAll:true
+                    }
+                }
                 else return
                 }
 
         //-------------------   TIPO DE DIETA   -------------------//      
         case FILTER_FOR_DIET:{
+            state.recipeFilterDietsKeep = state.recipeFilterAll.filter(element=>element.diets.includes(action.payload))
 
-                let recipeForDiet=state.recipeFilterDiets.filter(element=>element.diets.includes(action.payload))
-
+            let keepDates
+            state.recipeFilterStorageKeep.length ? keepDates=state.recipeFilterStorageKeep : keepDates = state.recipeFilterAll
+            
+            if(action.payload === "Todos"){
+                if(state.isAll){
                     return {...state,
-                            recipe:[...recipeForDiet],
-                            recipeFilter:[...recipeForDiet],
-                            recipeName:[...recipeForDiet]
-                        }        
+                        recipeFilter:state.recipeFilterAll
+                    }
+
                 }
+                return {...state,
+                    recipeFilter:state.recipeFilterStorageKeep
+                } 
+            }
+            else if(action.payload === "diets") return
+
+            let recipeForDiet=keepDates.filter(element=>element.diets.includes(action.payload))
+           
+            if (recipeForDiet.length===0){
+                return{...state,
+                    nullRecipeName:true,
+                    recipeFilterDietsKeep:[...state.recipeFilterDietsKeep]
+                }
+            }
+
+                return {...state,
+                        recipe:[...recipeForDiet],
+                        recipeFilter:[...recipeForDiet],
+                        recipeFilterDietsKeep:[...state.recipeFilterDietsKeep]
+                    }        
+            }
         //-------------------   HEALTH SCORE   -------------------//
         case FILTER_HEALTH_SCORE:{
                    

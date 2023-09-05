@@ -17,6 +17,7 @@ export const RESET="RESET"
 export const PAGINATED_ALL="PAGINATED_ALL"
 export const LOADING_PAGE="LOADING_PAGE"
 export const NULL_SEARCH_NAME = "NULL_SEARCH_NAME"
+export const RESET_RECIPE_NAME = "RESET_RECIPE_NAME"
 
 
 //-------------------   TODO Y NOMBRE   -------------------//
@@ -41,13 +42,12 @@ export const getRecipeAllName =(name)=>{
     return async function(dispatch){
         
         try {
+            dispatch(resetForName(false))
             dispatch(loadingPage(true))
              const {data} = await axios.get(`recipe?name=${name}`)
-             console.log(data);
-             //return dispatch({type:GET_RECIPE_NAME,payload:data})
 
-              if (data.error) return dispatch({type:NULL_SEARCH_NAME,payload:true})
-              else return dispatch({type:GET_RECIPE_NAME,payload:data})
+               if (data.length===0) return dispatch({type:NULL_SEARCH_NAME,payload:true})
+               else return dispatch({type:GET_RECIPE_NAME,payload:data})
 
          } catch (error) {
             return {erro:error.message}
@@ -56,6 +56,15 @@ export const getRecipeAllName =(name)=>{
     }
     
 }
+
+//-------------------   RESET FOR NAME   -------------------// 
+export const resetForName =(element)=>{
+
+    return {type:RESET_RECIPE_NAME,payload:element}
+
+}
+
+
 //-------------------   RECETA POR ID (DETAIL)   -------------------// 
 export const recipeId =(id)=>{
 

@@ -2,7 +2,7 @@ import './homePage.css'
 
 import { useEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux";
-import { addTypeRecipe, filterForStorage, getRecipeAll, upwardOrfalling,upwardOrfallingTitle,filterForDiets, filterHealthScore} from "../../redux/action";
+import { addTypeRecipe, filterForStorage, getRecipeAll, upwardOrfalling,upwardOrfallingTitle,filterForDiets, filterHealthScore, resetForName} from "../../redux/action";
 import HomeCard from './HomeCard';
 import Nav from '../nav/Nav';
 import Paginado from '../Paginado/Paginado';
@@ -17,13 +17,8 @@ const HomePage = ()=>{
      const loading=useSelector(state=>state.loading)
     //-------------------             -------------------//
 
-
-     const recipesAll = useSelector(state => state.recipe);
      const recipeFilter = useSelector(state => state.recipeFilter);
-     console.log(recipeFilter.length);
      const nullRecipeName = useSelector(state => state.nullRecipeName);
-     const recipeName = useSelector(state => state.recipeName);
-     //console.log(nullRecipeName);
      const numberOfRecets=recipeFilter.length
 
 
@@ -41,44 +36,41 @@ const HomePage = ()=>{
     let cards = recipeFilter.slice(inicio, final);
 
     //-------------------             -------------------//
-        
-
 
      //-------------------   CARGAMOS LOS ESTADOS CON LAS RECETAAS   -------------------//
+     useEffect(()=>{
+        dispatch(getRecipeAll())     
+    },[dispatch])
+
+    //-------------------   UNA RECETA QUE NO EXISTE   -------------------//
     useEffect(()=>{
-       // loading && dispatch(loadingPage(true))
-
-       if(nullRecipeName) {
-
-        swal("No se econtró ninguna receta con esta descripción")
-    }
-   if (!nullRecipeName && recipeName.length===recipeFilter.length) return
-    
-        !recipeFilter.length && dispatch(getRecipeAll())
-        recipeFilter.length !== recipesAll.length && dispatch(filterForStorage())
-
-    
-
-
-        
-    },[dispatch,recipeFilter.length,recipesAll.length,nullRecipeName])
+       if(nullRecipeName) swal("No se econtró ninguna receta con esta descripción")
+       
+       return ()=>dispatch(resetForName(false))
+    },[nullRecipeName,dispatch])
 
 
                 //-------------------   FILTROS   -------------------//
         //-------------------   ID   -------------------//
     const handleOrder=(event)=>{
         dispatch(upwardOrfalling(event.target.value))
+        setPage(1) 
+        setIndex(0)
     }
 
      //-------------------   TITULO   -------------------//
 
     const handleOrdertitle=(event)=>{
         dispatch(upwardOrfallingTitle(event.target.value))
+        setPage(1) 
+        setIndex(0)
     }
     
     //-------------------   API O BD   -------------------//
     const handleOrderForStorage =(event)=>{
         dispatch(filterForStorage(event.target.value))
+        setPage(1) 
+        setIndex(0)
 
     }
 
@@ -90,17 +82,20 @@ const HomePage = ()=>{
         },[dispatch])
         
         const typeDiet = useSelector((state)=>state.typesDiets)
-        //console.log(typeDiet);
       
 
         const handleFilterDiets =(event)=>{
             dispatch(filterForDiets(event.target.value))
+            setPage(1) 
+            setIndex(0)
     
         }
 
     //-------------------   HEALTH SCORE   -------------------//
         const handleOrderHealthScore =(event)=>{
             dispatch(filterHealthScore(event.target.value))
+            setPage(1) 
+            setIndex(0)
 
         }
 
@@ -147,6 +142,7 @@ const HomePage = ()=>{
                <div>
                     <select className='input' placeholder='Orden' onChange={handleOrderForStorage}>
                         <option  >Filter for storage</option>
+                        <option value="TODOS" >TODOS</option>
                         <option value="API" >API</option>
                         <option value="BASE DE DATOS">BASE DE DATOS</option>
                     </select>
@@ -154,7 +150,8 @@ const HomePage = ()=>{
 
                <div>
                     <select className='input' placeholder='Type Diet' onChange={handleFilterDiets}>
-                            <option  value="diets">type of diets</option>
+                            <option  value="diets">Dieta</option>
+                            <option  value="Todos">Todos</option>
                             {typeDiet.map((diet,index)=>(
                             <option  key= {index} value={diet.name} >{diet.name}</option>
                             ))}
