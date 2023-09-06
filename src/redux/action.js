@@ -18,6 +18,7 @@ export const PAGINATED_ALL="PAGINATED_ALL"
 export const LOADING_PAGE="LOADING_PAGE"
 export const NULL_SEARCH_NAME = "NULL_SEARCH_NAME"
 export const RESET_RECIPE_NAME = "RESET_RECIPE_NAME"
+export const RESET_PAGE = "RESET_PAGE"
 
 
 //-------------------   TODO Y NOMBRE   -------------------//
@@ -157,6 +158,13 @@ export const filterHealthScore =(HealthScore)=>{
 export const loadingPage =(stateLoading)=>{
 
     return {type:LOADING_PAGE,payload:stateLoading}
+
+}
+
+//-------------------   LOADING   -------------------//
+export const resetAll =()=>{
+
+    return {type:RESET_PAGE}
 
 }
        

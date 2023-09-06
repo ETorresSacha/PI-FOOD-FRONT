@@ -2,7 +2,7 @@ import './homePage.css'
 
 import { useEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux";
-import { addTypeRecipe, filterForStorage, getRecipeAll, upwardOrfalling,upwardOrfallingTitle,filterForDiets, filterHealthScore, resetForName} from "../../redux/action";
+import { addTypeRecipe, filterForStorage, getRecipeAll, upwardOrfalling,upwardOrfallingTitle,filterForDiets, filterHealthScore, resetForName, resetAll} from "../../redux/action";
 import HomeCard from './HomeCard';
 import Nav from '../nav/Nav';
 import Paginado from '../Paginado/Paginado';
@@ -21,7 +21,7 @@ const HomePage = ()=>{
      const nullRecipeName = useSelector(state => state.nullRecipeName);
      const numberOfRecets=recipeFilter.length
 
-
+    console.log(recipeFilter);
      //-------------------   PAGINADO   -------------------//
 
     const [index,setIndex]=useState(0) // se crea este estado dentro de "HomePage" con la finalidad de pasarlo por props al componente "Nav" y utilizarlo, pero el uso principal de este hook es en el componente "Paginado"
@@ -108,7 +108,7 @@ const HomePage = ()=>{
 
     //-------------------   RESET   -------------------// 
     const resetAllRecipe =()=>{
-        dispatch(getRecipeAll())
+        dispatch(resetAll())
         // para volver a la pagina principal
         setPage(1) 
         setIndex(0)

@@ -1,4 +1,4 @@
-import {GET_RECIPE_ALL, GET_RECIPE_NAME,NULL_SEARCH_NAME, RESET_RECIPE_NAME,RECIPE_ID, RESET_RECIPE_ID,ADD_TYPE_DIET,CREATE_RECIPE,UPWARD_OR_FALLING,UPWARD_OR_FALLING_TITLE,FILTER_FOR_STORAGE, FILTER_FOR_DIET,FILTER_HEALTH_SCORE,LOADING_PAGE} from './action'
+import {GET_RECIPE_ALL, GET_RECIPE_NAME,NULL_SEARCH_NAME, RESET_RECIPE_NAME,RECIPE_ID, RESET_RECIPE_ID,ADD_TYPE_DIET,CREATE_RECIPE,UPWARD_OR_FALLING,UPWARD_OR_FALLING_TITLE,FILTER_FOR_STORAGE, FILTER_FOR_DIET,FILTER_HEALTH_SCORE,LOADING_PAGE,RESET_PAGE} from './action'
 import  { sumaUnicode } from './fun-sum-unicode'// Función para calcular el valor numerico del Id de los datos de la BD
 
 const initialState={
@@ -259,6 +259,12 @@ const reducer=(state=initialState,action)=>{
         case LOADING_PAGE:
             return {...state,
                 loading:action.payload
+            }
+
+        //-------------------   LOADING   -------------------//
+        case RESET_PAGE:
+            return {...state,
+                recipeFilter:state.recipeFilterAll
             }
 
         default:
