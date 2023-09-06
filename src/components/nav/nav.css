@@ -3,7 +3,7 @@
     justify-content: center;
     margin: 20px 10px 50px;
     padding: 15px;
-    border:solid;
+    background: rgba(183, 182, 181, 0.618);
     align-items: center;
     gap:20rem;
 }

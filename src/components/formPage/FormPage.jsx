@@ -5,6 +5,7 @@ import { addTypeRecipe, createRecipe, getRecipeAll } from '../../redux/action';
 import { useNavigate } from 'react-router-dom'
 import logo from '../../image/logo-detail.jpg'
 import imageDefault from '../../image/cooking.png'
+import swal from 'sweetalert';
 
 
 
@@ -164,7 +165,14 @@ const FormPage = ()=>{
 
          if (dato.some(error => error !== "")) { // si algun valor del array es diferente a "" entonces entra, sino pasa al else
            setError(error)
-           window.alert("Faltan completar los datos requeridos  :(")
+           swal({
+            title:"¡ATENCIÓN!",
+            text:"Faltan completar los datos requeridos",
+            icon:"info",
+            button:"aceptar",
+            timer:"3000"
+        })
+       
          } 
          else {
             dispatch(createRecipe(input))
@@ -176,8 +184,14 @@ const FormPage = ()=>{
                 image:"",
                 dietId:[]
             })
-            
-            window.alert("Nueva receta creado correctamente  :)")
+            swal({
+                title:"¡ok!",
+                text:"Nueva receta creado correctamente",
+                icon:"success",
+                button:"aceptar",
+                timer:"3000"
+            })
+
             let form=document.querySelector("#form")
             form.reset()
          }

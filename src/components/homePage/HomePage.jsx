@@ -44,7 +44,13 @@ const HomePage = ()=>{
 
     //-------------------   UNA RECETA QUE NO EXISTE   -------------------//
     useEffect(()=>{
-       if(nullRecipeName) swal("No se econtró ninguna receta con esta descripción")
+       if(nullRecipeName) swal({
+        title:"¡ATENCIÓN!",
+        text:"No existe registro",
+        icon:"info",
+        button:"aceptar",
+        timer:"3000"
+    })
        
        return ()=>dispatch(resetForName(false))
     },[nullRecipeName,dispatch])
